@@ -14,14 +14,14 @@ const board = (() => {
                 // diagonal is +1+1 or -1-1
                 
 
-    const showGrid = () => { // private
+    const getGrid = () => { // private
         return grid;
     };
 
     const placeMark = (player,x,y) => {
         let mark = "";
 
-        if (player === 1){
+        if (player == 1){
             mark = "X";
         }
         else{
@@ -29,31 +29,66 @@ const board = (() => {
         }
 
         grid[x][y] = mark;
-        return showGrid();
+        display.switchPlayer();
+
+        return getGrid();
     };
 
+    const getMark = (x,y) => {
+        return grid[x][y];
+    }
+
     const resetGrid = () => {
-        grid = [
+        grid = [ 
         ["", "", ""],
         ["", "", ""],
         ["", "", ""]
     ];
-        return showGrid();
+        return getGrid();
     };
 
     return {
         placeMark,
+        getMark,
         resetGrid,
-        showGrid
+        getGrid
     };
     
-})(); // iife, immediately invoked function expression
+})(); // IIFE, immediately invoked function expression
+
 
 // game display object (module)
-const gameDisplay = (() => {
+const display = (() => {
     let turn = 0;
     let startPlayer = 0;
-    let grid = board.showGrid();
+    let activePlayer = 1;
+
+    let grid = board.getGrid();
+
+    // process buttons and add listeners
+    const allButtons = document.querySelectorAll("button");
+    
+    document.addEventListener('click', function (event) {
+
+        if (event.target.matches('button')){
+            button = event.target;
+            let x = button.id.substring(0,1);
+            let y = button.id.substring(2,3);
+            
+            board.placeMark(activePlayer,x,y);
+            button.innerHTML = board.getMark(x,y);
+        };
+
+    }, false);
+
+    const switchPlayer = () => {
+        if (activePlayer == 1){
+            activePlayer = 2;
+        }
+        else{
+            activePlayer = 1;
+        }
+    }
 
     const newGame = () => {
         board.resetGrid();
@@ -63,18 +98,16 @@ const gameDisplay = (() => {
 
     };
 
-    const displayGrid = () => {
+    const showGrid = () => {
 
-        const allButtons = document.querySelectorAll("button");
-
-        grid.forEach((value, row) => {
+         grid.forEach((value, row) => {
             
             value.forEach((item, column) => {
                 console.log(item, row, column);
+
             })
 
         });
-        
 
         // iterate through the grid array
         // for every x,y set the same button with ID x,y to have the same innerhtml value
@@ -86,7 +119,8 @@ const gameDisplay = (() => {
     return {
         newGame,
         checkForWin,
-        displayGrid
+        switchPlayer,
+        showGrid
     };
 
 })();
