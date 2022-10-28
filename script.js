@@ -28,10 +28,14 @@ const board = (() => {
             mark = "O";
         }
 
-        grid[x][y] = mark;
-        display.switchPlayer();
+        grid[x][y] = mark; // set array mark
 
-        return getGrid();
+        game.switchPlayer(); // set next player
+
+        game.incrementTurn(); // make it next turn
+        
+
+        return getGrid(); // pass the updated grid
     };
 
     const getMark = (x,y) => {
@@ -58,19 +62,16 @@ const board = (() => {
 
 
 // game display object (module)
-const display = (() => {
+const game = (() => {
     let turn = 0;
-    let startPlayer = 0;
+    let startPlayer = 0; //utilize later
     let activePlayer = 1;
 
     let grid = board.getGrid();
 
-    // process buttons and add listeners
-    const allButtons = document.querySelectorAll("button");
-    
     document.addEventListener('click', function (event) {
 
-        if (event.target.matches('button')){
+        if (event.target.matches('.cell')){ // will need to be more specific if i add other buttons
             button = event.target;
             let x = button.id.substring(0,1);
             let y = button.id.substring(2,3);
@@ -91,34 +92,45 @@ const display = (() => {
     }
 
     const newGame = () => {
-        board.resetGrid();
+        board.resetGrid(); //resets the array but doesn't remove the HTML from the buttons
+        turn = 0;
+        activePlayer = 0;
+        resetButtons();
+    };
+
+    const resetButtons = () => { // this isn't working, but i should commit it
+        let temp = document.querySelectorAll('.cell');
+        for (all in temp){
+            all.innerHTML = '';
+        };
+    };
+
+
+    const incrementTurn = () => {
+        turn++;
+        return turn;
     };
 
     const checkForWin = () => {
 
     };
 
-    const showGrid = () => {
+    const showGrid = () => { // this may be depreciated
 
          grid.forEach((value, row) => {
             
             value.forEach((item, column) => {
                 console.log(item, row, column);
-
             })
 
         });
-
-        // iterate through the grid array
-        // for every x,y set the same button with ID x,y to have the same innerhtml value
-        // grab all those buttons first
-
-    
     };
 
     return {
         newGame,
+        incrementTurn,
         checkForWin,
+        resetButtons, // maybe keep private later, only needed in this module
         switchPlayer,
         showGrid
     };
