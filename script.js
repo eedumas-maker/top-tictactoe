@@ -34,6 +34,7 @@ const board = (() => {
 
         game.incrementTurn(); // make it next turn
         
+        game.checkForWin();
 
         return getGrid(); // pass the updated grid
     };
@@ -43,12 +44,11 @@ const board = (() => {
     }
 
     const resetGrid = () => {
-        grid = [ 
+        return grid = [ 
         ["", "", ""],
         ["", "", ""],
         ["", "", ""]
-    ];
-        return getGrid();
+        ];
     };
 
     return {
@@ -78,6 +78,7 @@ const game = (() => {
             
             board.placeMark(activePlayer,x,y);
             button.innerHTML = board.getMark(x,y);
+            button.disabled = true; 
         };
 
     }, false);
@@ -100,8 +101,8 @@ const game = (() => {
 
     const resetButtons = () => { // this isn't working, but i should commit it
         let temp = document.querySelectorAll('.cell');
-        for (all in temp){
-            all.innerHTML = '';
+        for (cell in temp){
+            cell.innerHTML = '';
         };
     };
 
@@ -112,6 +113,48 @@ const game = (() => {
     };
 
     const checkForWin = () => {
+        let boardSize = 3; // so I can futz with this later and make bigger boards!
+        let winMark = '';
+
+        // i wish i knew recursion
+        // only need to check neighbors from edge on out, WILL NEED TO REFACTOR FOR LARGER BOARD!
+        for(x = 0; x < boardSize; x++){
+            
+            if (board.getMark(x,0) === board.getMark(x,1) && // if 00 = 01 = 02 (x axis)
+                board.getMark(x,1) === board.getMark(x,2)){
+                    winMark = board.getMark(x,0);
+                }
+            else if(board.getMark(0,x) === board.getMark(1,x) && // if 00 = 10 = 20 (y axis)
+                board.getMark(1,x) === board.getMark(2,x) ){
+                    winMark = board.getMark(0,x);
+                }
+        };
+
+        if(board.getMark(0,0) === board.getMark(1,1) && // diagonal one (hardcoded, i know, gross)
+            board.getMark(1,1) === board.getMark(2,2)) {
+                winMark = board.getMark(0,0);
+            }
+        else if(board.getMark(0,2) === board.getMark(1,1) && // diagonal two (same, gross)
+                board.getMark(1,1) === board.getMark(2,0)) {
+                winMark = board.getMark(0,2);
+            };
+
+        
+        if(winMark = '' && turn <9){
+            return;
+        }
+        else if(winMark = '' && turn == 9){
+            alert(`It's a Tie!`);
+            return winMark = "Tie";
+        }
+        else if(winMark != ''){
+            alert(`${winMark} is the Winner!`);
+            return winMark;
+
+        };
+
+        console.log("the win mark is" + winMark);
+
 
     };
 
