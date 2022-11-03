@@ -123,52 +123,8 @@ const game = (() => {
         // iterate through edges
         console.log("checking for win");
 
-
-        for (p = 0; p < grid.length; p++){
-            
-            
-            for (i = 0; i < grid.length; i++){
-                
-                let temp = grid[i][p];
-
-                console.log("i = " + i + " and p = " +p);
-                console.log("temp is: " + temp);
-
-                if(temp === ""){
-                    console.log("empty space break");
-                    break; // because all blanks would technically be three in a row...
-                }
-
-                if (temp === grid[i][p]){
-                    grid[i][p] = temp;
-                }
-                else if (temp === grid[p][i]){
-                    grid[p][i] = temp;
-                }
-                else {
-                    console.log("no match break");
-                    break; // gotta quit checking if nobody matches
-                    
-                }
-
-                if (i === grid.length-1){
-                    win = true;
-                    winner = grid[i][p];
-                    console.log("we have a winner! break")
-                    break;
-                }
-            }
-            
-            if(winner = true){
-                break;
-            }
-
-
-        }
         
-        
-        
-        
+
     
     };
 
