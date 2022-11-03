@@ -1,0 +1,47 @@
+figuring out the winning code
+
+let's run a for loop (might need to have it in some conditions, but that's ok)
+
+it'll run until it hits the length of the array
+it'll start from the edge, and check and see if that is equal to the next tile, and the next
+it'll compare both the x axis and y axis
+
+start with hard coding it (like grid[0][i] through grid[2][i])
+    figure out the cascading comparison later on
+
+if all three are true, break out of the loop, with a winner marked, and winning token
+if none are true, then move to the next iteration
+
+if it's the very last turn, and none are true, return Tie
+    figure this out later
+
+I can skip iterations with Continue, and I can jump out of a loop with break
+
+
+
+(could you do something with if... and temp variable?
+if grid[0][x] === grid[1][x]{
+    grid[1][x] = temp;
+}
+if temp === grid[2][x]
+
+(solve it one dimensionally first!)
+a, b, c, d, == grid[0], grid[1], etc.
+
+
+
+let grid = ["X", "X", "X"];
+let temp = grid[0];
+
+for(i = 0; i < grid.length-1; i++) //has to stop right before end, because it checks last tile in 
+
+if (temp = grid[i+1]){
+    grid[1+1] = temp; // set the temp to the next one, 
+
+    if(i = length-1){
+        win = true;
+    } // check for last tile
+}
+else{
+    break; 
+}
