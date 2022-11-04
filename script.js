@@ -30,14 +30,19 @@ const board = (() => {
 
         grid[x][y] = mark; // set array mark
 
-        game.switchPlayer(); // set next player
-
-        game.incrementTurn(); // make it next turn
+        
+        
+        game.playerUp(game.getActivePlayer());
         
         if(game.checkForWin(x, y))
         {
+            game.winReset();
             console.log("We have a winner, and it's " + mark);
-        }; // pass in the coords
+        }
+        else { // if no winners
+            game.switchPlayer(); // set next player
+            game.incrementTurn(); // make it next turn
+        } 
 
         return getGrid(); // pass the updated grid
     };
@@ -76,6 +81,26 @@ const game = (() => {
 
     let grid = board.getGrid();
 
+    const playerUp = () => {
+        playerDisplay = document.querySelector(".playerUp");
+
+        if(activePlayer === 1){
+            return playerDisplay.innerHTML = "<h1>Player 1 is up</h1>"
+        }
+        else if(activePlayer === 2){
+            return playerDisplay.innerHTML = "<h1>Player 2 is up</h1>"
+        }
+    }
+
+    const winReset = () => {
+        winnerDisplay = document.querySelector(".winner");
+        winnerDisplay.innerHTML = `<h3>Player #${activePlayer} is the winner!</h3>`;
+        freezeButtons();
+    }
+
+    const getActivePlayer = () => {
+        return activePlayer;
+    }
 
     const checkForWin = (x,y) => {
 
@@ -111,7 +136,6 @@ const game = (() => {
         if(checkCol(y) || checkRow(x)){
             return true;
         }
-
     };
 
     document.addEventListener('click', function (event) {
@@ -145,11 +169,18 @@ const game = (() => {
     };
 
     const resetButtons = () => { // this isn't working, but i should commit it
-        let temp = document.querySelectorAll('.cell');
-        for (cell in temp){
-            cell.innerHTML = '';
-        };
+        let elements = document.querySelectorAll('.cell');
+        for(let i = 0; i < elements.length; i++){
+            elements[i].innerHTML = "";
+        }
     };
+
+    const freezeButtons = () => {
+        let elements = document.querySelectorAll('.cell');
+        for(let i = 0; i < elements.length; i++){
+            elements[i].disabled = true;
+        }
+    }
 
 
     const incrementTurn = () => {
@@ -175,7 +206,11 @@ const game = (() => {
         checkForWin,
         resetButtons, // maybe keep private later, only needed in this module
         switchPlayer,
-        showGrid
+        showGrid, 
+        playerUp,
+        getActivePlayer,
+        freezeButtons,
+        winReset
     };
 
 })();
@@ -191,7 +226,7 @@ const newPlayer = (number) => {
 
 const player1 = newPlayer(1);
 const player2 = newPlayer(2);
-
+game.playerUp();
  
 
 
