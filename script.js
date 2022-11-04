@@ -131,67 +131,71 @@ const game = (() => {
 
         const checkRow = (grid,row) => {
             let temp = grid[row][0];
-
+            
             if(temp === ""){
                 return ""; // escape out if first item is blank;
             }
-
+debugger;
             for(i = 0; i < (grid.length - 1); i++){
                 
                 if(temp === grid[row][i+1]){ // is it equal to the next one ?
 
                     if(i === (grid.length - 1)){ // win condition at last space
-                        return temp; // elegant, as this is the winner!
+                        return temp; // elegant, as this is the winner!                      
                     }
                     temp = grid[row][i+1];
                     continue;
                 }
-                else{
-
+                else {
                     return ""; //returns false if no match
                 }
-            }
-        }
+debugger;
+            };
+        };
 
-        const checkCol = (grid,col) => {
-            let temp = grid[0][col];
+        // const checkCol = (grid,col) => {
+        //     let temp = grid[0][col];
 
-            if(temp === ""){
-                return ""; // escape out if first item is blank;
-            }
+        //     if(temp === ""){
+        //         return ""; // escape out if first item is blank;
+        //     }
 
-            for(i = 0; i < (grid.length - 1); i++){
+        //     for(i = 0; i < (grid.length - 1); i++){
                 
-                if(temp === grid[i+1][col]){ // is it equal to the next one ?
+        //         if(temp === grid[i+1][col]){ // is it equal to the next one ?
 
-                    if(i === (grid.length - 1)){ // win condition at last space
-                        return temp; // elegant, as this is the winner!
-                    }
-                    temp = grid[i+1][col];
-                    continue;
-                }
+        //             if(i === (grid.length - 1)){ // win condition at last space
+        //                 return temp; // elegant, as this is the winner!
+        //             }
+        //             temp = grid[i+1][col];
+        //             continue;
+        //         }
 
-                else{
-                    return ""; //returns false if no match
-                }
-            }
-        }
+        //         else{
+        //             return ""; //returns false if no match
+        //         }
+        //     }
+        // }
 
-        const checkDiag = (grid) => {
-            // write this laster (later/last)
-        }
+        // const checkDiag = (grid) => {
+        //     // write this laster (later/last)
+        // }
 
-        for(i = 0; i < grid.length; i++){
-            if(checkRow(grid,i)){
-                win = true;
-                let winner = checkRow(grid,i);/// hmm, this is tricky, can't check col or row each time
-            }
-            if(checkCol(grid,i)){
-                win = true;
-                let winner = checkCol(grid,i);
-            }
-        }
-    
+//         for(i = 0; i < grid.length; i++){
+//  debugger;           
+//             if(checkRow(grid,i) !== ""){          
+//                 win = true;
+//                 let winner = checkRow(grid,i);/// hmm, this is tricky, can't check col or row each time
+//             }
+
+//             // if(checkCol(grid,i)){
+//             //     win = true;
+//             //     let winner = checkCol(grid,i);
+//             // }
+//         }
+
+        console.log("check for win complete");
+        console.log("winner = " + winner);
     };
 
     const showGrid = () => { // this may be depreciated
