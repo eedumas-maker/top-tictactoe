@@ -21,27 +21,29 @@ const board = (() => {
     const placeMark = (player,x,y) => {
         let mark = "";
 
-        if (player == 1){
+        if (player === 1){
             mark = "X";
         }
         else{
             mark = "O";
         }
 
-        grid[x][y] = mark; // set array mark
+        grid[x][y] = mark;
+        
+        
 
-        
-        
         game.playerUp(game.getActivePlayer());
         
-        if(game.checkForWin(x, y))
+
+        if(game.checkForWin(grid,x,y))
         {
             game.winReset();
             console.log("We have a winner, and it's " + mark);
         }
         else { // if no winners
+            game.incrementTurn();
             game.switchPlayer(); // set next player
-            game.incrementTurn(); // make it next turn
+            game.checkForTie();
         } 
 
         return getGrid(); // pass the updated grid
@@ -71,13 +73,12 @@ const board = (() => {
 
 // game display object (module)
 const game = (() => {
-    let turn = 0;
-    let startPlayer = 0; //utilize later
-    let activePlayer = 1;
-    let boardSize = 3; // so I can futz with this later and make bigger boards!
-    let win = false;
-    let tie = false;
-    let winner = '';
+    let turn = 1;
+
+    let activePlayer = 0;
+   
+    let player1Name = '';
+    let player2Name = '';
 
     let grid = board.getGrid();
 
@@ -85,16 +86,26 @@ const game = (() => {
         playerDisplay = document.querySelector(".playerUp");
 
         if(activePlayer === 1){
-            return playerDisplay.innerHTML = "<h1>Player 1 is up</h1>"
+            return playerDisplay.innerHTML = `<h1>${player1Name} is up</h1>`;
         }
         else if(activePlayer === 2){
-            return playerDisplay.innerHTML = "<h1>Player 2 is up</h1>"
+            return playerDisplay.innerHTML = `<h1>${player2Name} is up</h1>`;
+        }
+        else {
+            return playerDisplay.innerHTML = `<h1>Please press New Game below</h1>`;
         }
     }
 
     const winReset = () => {
-        winnerDisplay = document.querySelector(".winner");
-        winnerDisplay.innerHTML = `<h3>Player #${activePlayer} is the winner!</h3>`;
+        winnerDisplay = document.querySelector(".playerUp");
+        
+        if(activePlayer === 1){
+            winnerDisplay.innerHTML = `<h1>${player1Name} is the winner!</h1>`;
+        }
+        else{
+            winnerDisplay.innerHTML = `<h1>${player2Name} is the winner!</h1>`;
+        }
+        
         freezeButtons();
     }
 
@@ -102,16 +113,28 @@ const game = (() => {
         return activePlayer;
     }
 
-    const checkForWin = (x,y) => {
+    const setPlayerName = (playerNum) => {
+        if(playerNum === 1){
+            player1Name = prompt("Player #1's name:");
+        }
+        else if (playerNum === 2){
+            player2Name = prompt("Player #2's name:");
+        }
+        else {
+            window.alert("Please only 2 players");
+        }
+    }
+
+
+    const checkForWin = (grid,x,y) => {
 
         // look at each row and column that crosses the x,y, so if the target is 2,2 
         // then you'd check the row starting from 20, 21, 22 and the column from 02 12 22
         // meaning you only need to iterate through one side at a time
 
-        console.log("It's " + grid[x][y] + "'s turn");
+        console.log("It's " + board.getMark(x,y) + "'s turn");
         console.log("checking x/y at " + x + " and " + y);
-
-
+        console.log("and the grid shows... " + grid[x][y]);
         // of course it returns false, there's no way it's true along all axis
         // put into their own IIFEs ok?
 
@@ -127,16 +150,51 @@ const game = (() => {
         const checkRow = function(x){
             for(let i = 0; i< grid.length -1; i++){
                 if(grid[x][i] !== grid[x][i+1]){
-                return false;
+                    return false;
                 }
             }
             return true;
         };
 
-        if(checkCol(y) || checkRow(x)){
+        const checkDiag1 = function(x,y){
+            for(let i = 0; i < grid.length; i++){
+
+                console.log(grid[i][i]);
+                if(grid[x][y] !== grid[i][i]){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        const checkDiag2 = function(x,y){
+            for(let i = 0; i < grid.length; i++){
+                let temp = (grid.length -1) - i;
+                if(grid[x][y] !== grid[i][temp]){
+
+                    return false;
+                }
+            }
+            return true; 
+        }
+        
+
+        if(checkCol(y) || checkRow(x) || checkDiag1(x,y) || checkDiag2(x,y)){
             return true;
         }
     };
+
+    const checkForTie = () => {
+        if(turn < 10){
+            return false;
+        }
+        else {
+            let display = document.querySelector(".playerUp");
+            display.innerHTML = `<h1>It's a tie</h1>`;
+            freezeButtons();
+            debugger;
+        }
+    }
 
     document.addEventListener('click', function (event) {
 
@@ -150,6 +208,11 @@ const game = (() => {
             button.disabled = true; 
         };
 
+        if (event.target.matches('.newGame')){
+            button = event.target;
+            newGame();
+        }
+
     }, false);
 
     const switchPlayer = () => {
@@ -159,13 +222,21 @@ const game = (() => {
         else{
             activePlayer = 1;
         }
+        playerUp();
     }
 
     const newGame = () => {
+        
         board.resetGrid(); //resets the array but doesn't remove the HTML from the buttons
-        turn = 0;
-        activePlayer = 0;
+        enableButtons();
+        turn = 1;
+        activePlayer = 1;
         resetButtons();
+
+        setPlayerName(1);
+        setPlayerName(2);
+
+        playerUp();
     };
 
     const resetButtons = () => { // this isn't working, but i should commit it
@@ -182,21 +253,26 @@ const game = (() => {
         }
     }
 
+    const enableButtons = () => {
+        let elements = document.querySelectorAll('.cell');
+        for(let i = 0; i < elements.length; i++){
+            elements[i].disabled = false;
+        }
+    }
+
 
     const incrementTurn = () => {
         turn++;
+        console.log("it's now turn# " + turn);
         return turn;
+        
     };
 
-
     const showGrid = () => { // this may be depreciated
-
          grid.forEach((value, row) => {
-            
             value.forEach((item, column) => {
                 console.log(item, row, column);
             })
-
         });
     };
 
@@ -210,7 +286,8 @@ const game = (() => {
         playerUp,
         getActivePlayer,
         freezeButtons,
-        winReset
+        winReset,
+        checkForTie
     };
 
 })();
@@ -223,10 +300,9 @@ const newPlayer = (number) => {
 
 };
 
+// put all this behind a New Game button that asks players their names
 
-const player1 = newPlayer(1);
-const player2 = newPlayer(2);
-game.playerUp();
+game.newGame();
  
 
 
