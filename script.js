@@ -34,7 +34,10 @@ const board = (() => {
 
         game.incrementTurn(); // make it next turn
         
-        game.checkForWin();
+        if(game.checkForWin(x, y))
+        {
+            console.log("We have a winner, and it's " + mark);
+        }; // pass in the coords
 
         return getGrid(); // pass the updated grid
     };
@@ -66,8 +69,50 @@ const game = (() => {
     let turn = 0;
     let startPlayer = 0; //utilize later
     let activePlayer = 1;
+    let boardSize = 3; // so I can futz with this later and make bigger boards!
+    let win = false;
+    let tie = false;
+    let winner = '';
 
     let grid = board.getGrid();
+
+
+    const checkForWin = (x,y) => {
+
+        // look at each row and column that crosses the x,y, so if the target is 2,2 
+        // then you'd check the row starting from 20, 21, 22 and the column from 02 12 22
+        // meaning you only need to iterate through one side at a time
+
+        console.log("It's " + grid[x][y] + "'s turn");
+        console.log("checking x/y at " + x + " and " + y);
+
+
+        // of course it returns false, there's no way it's true along all axis
+        // put into their own IIFEs ok?
+
+        const checkCol = function(y){
+            for(let i = 0; i< grid.length -1; i++){
+                if(grid[i][y] !== grid[i+1][y]){
+                    return false;
+                }
+            }
+            return true;
+        };
+        
+        const checkRow = function(x){
+            for(let i = 0; i< grid.length -1; i++){
+                if(grid[x][i] !== grid[x][i+1]){
+                return false;
+                }
+            }
+            return true;
+        };
+
+        if(checkCol(y) || checkRow(x)){
+            return true;
+        }
+
+    };
 
     document.addEventListener('click', function (event) {
 
@@ -112,91 +157,6 @@ const game = (() => {
         return turn;
     };
 
-    const checkForWin = () => {
-        let boardSize = 3; // so I can futz with this later and make bigger boards!
-        let win = false;
-        let tie = false;
-        let winner = '';
-
-        let grid = board.getGrid(); // just grab it once for the method
-
-        // iterate through edges
-        console.log("checking for win");
-
-        // try next making a checkRow and checkCol function
-
-        // you pass it the row or col, and it returns true if the whole column
-        // then you can run the checkRow in a for loop, and have it pass up till length-1
-        // could even make a checkDiag function eh? no needed loop for that one
-
-        const checkRow = (grid,row) => {
-            let temp = grid[row][0];
-            
-            if(temp === ""){
-                return ""; // escape out if first item is blank;
-            }
-debugger;
-            for(i = 0; i < (grid.length - 1); i++){
-                
-                if(temp === grid[row][i+1]){ // is it equal to the next one ?
-
-                    if(i === (grid.length - 1)){ // win condition at last space
-                        return temp; // elegant, as this is the winner!                      
-                    }
-                    temp = grid[row][i+1];
-                    continue;
-                }
-                else {
-                    return ""; //returns false if no match
-                }
-debugger;
-            };
-        };
-
-        // const checkCol = (grid,col) => {
-        //     let temp = grid[0][col];
-
-        //     if(temp === ""){
-        //         return ""; // escape out if first item is blank;
-        //     }
-
-        //     for(i = 0; i < (grid.length - 1); i++){
-                
-        //         if(temp === grid[i+1][col]){ // is it equal to the next one ?
-
-        //             if(i === (grid.length - 1)){ // win condition at last space
-        //                 return temp; // elegant, as this is the winner!
-        //             }
-        //             temp = grid[i+1][col];
-        //             continue;
-        //         }
-
-        //         else{
-        //             return ""; //returns false if no match
-        //         }
-        //     }
-        // }
-
-        // const checkDiag = (grid) => {
-        //     // write this laster (later/last)
-        // }
-
-//         for(i = 0; i < grid.length; i++){
-//  debugger;           
-//             if(checkRow(grid,i) !== ""){          
-//                 win = true;
-//                 let winner = checkRow(grid,i);/// hmm, this is tricky, can't check col or row each time
-//             }
-
-//             // if(checkCol(grid,i)){
-//             //     win = true;
-//             //     let winner = checkCol(grid,i);
-//             // }
-//         }
-
-        console.log("check for win complete");
-        console.log("winner = " + winner);
-    };
 
     const showGrid = () => { // this may be depreciated
 

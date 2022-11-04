@@ -45,48 +45,4 @@ if (temp = grid[i+1]){
 else{
     break; 
 }
-
-works one-dimensionally, but that's it
-----  failed for loop, trying while next ----
-
-
-        for (c = 0; c < grid.length; c++){ // c = column,  grid[r][c]
-            
-            for (r = 0; r < grid.length-1; r++){ // r = row
-                
-                let temp = grid[r][c];
-
-                console.log("r = " + r + " and c = " + c);
-
-                if(temp === ""){
-                    console.log("empty space break");
-                    break; // because all blanks would technically be three in a row...
-                }
-
-                if (temp === grid[r+1][c]){
-                    grid[r][c] = temp;
-                }
-                else {
-                    console.log("no match break");
-                    break; // gotta quit checking if nobody matches
-                }
-
-                console.log("temp is: " + temp);
-
-                if (r === grid.length-1){
-                    win = true;
-                    break;
-                }
-            }
-
-            if(win === true){
-                winner = grid[r][c];
-                console.log("we have a winner! break")
-                break;
-            }
-
-
-        }
-        
-        
-        
+  
